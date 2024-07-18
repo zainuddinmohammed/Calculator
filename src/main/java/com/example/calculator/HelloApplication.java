@@ -1,12 +1,16 @@
 package com.example.calculator;
 
 import javafx.application.Application;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class HelloApplication extends Application {
@@ -23,14 +27,14 @@ public class HelloApplication extends Application {
         final double STAGE_X = 1150;
         final double STAGE_Y = 40;
 
-        final int BUTTONS_WIDTH = 4;
-        final int BUTTONS_HEIGHT = 5;
-        final int TOTAL_BUTTONS = BUTTONS_WIDTH * BUTTONS_HEIGHT;
+        final int BUTTONS_ACROSS = 4;
+        final int BUTTONS_HIGH = 5;
+        final int TOTAL_BUTTONS = BUTTONS_ACROSS * BUTTONS_HIGH;
 
         final double GAP = 10;
 
-        final double BUTTON_WIDTH = ((CALCULATOR_WIDTH - GAP) / BUTTONS_WIDTH) - GAP;
-        final double BUTTON_HEIGHT = ((CALCULATOR_HEIGHT - ANSWER_BGND_HEIGHT - GAP) / BUTTONS_HEIGHT) - GAP;
+        final double BUTTON_WIDTH = ((CALCULATOR_WIDTH - GAP) / BUTTONS_ACROSS) - GAP;
+        final double BUTTON_HEIGHT = ((CALCULATOR_HEIGHT - ANSWER_BGND_HEIGHT - GAP) / BUTTONS_HIGH) - GAP;
 
         Group root = new Group();
 
@@ -66,13 +70,13 @@ public class HelloApplication extends Application {
 
         answer_background_triangle.getPoints().setAll(
 
-                                 0.0,0.0, CALCULATOR_WIDTH,0.0,
+                                 0.0,0.0,           CALCULATOR_WIDTH,0.0,
 //                                        ._______.
 //                                         \     /
 //                                          \   /
 //                                           \ /
 //                                            v
-                              (CALCULATOR_WIDTH / 2), ANSWER_BGND_HEIGHT
+                              (CALCULATOR_WIDTH/2),ANSWER_BGND_HEIGHT
 
         );
 
@@ -82,12 +86,12 @@ public class HelloApplication extends Application {
 
         bottom_background_triangle.getPoints().setAll(
 
-                             (CALCULATOR_WIDTH / 2), ANSWER_BGND_HEIGHT,
+                           (CALCULATOR_WIDTH/2), ANSWER_BGND_HEIGHT,
 //                                            ^
 //                                           / \
 //                                          /   \
 //                                         /_____\
-                         0.0, CALCULATOR_HEIGHT, CALCULATOR_WIDTH, CALCULATOR_HEIGHT
+                   0.0, CALCULATOR_HEIGHT,         CALCULATOR_WIDTH, CALCULATOR_HEIGHT
 
         );
 
@@ -113,31 +117,28 @@ public class HelloApplication extends Application {
         double x_current = GAP;
         double y_current = ANSWER_BGND_HEIGHT + GAP;
 
+        Button [] buttons = new Button[TOTAL_BUTTONS];
+        int b = 0;
 
+        for(int i = 0; i < BUTTONS_HIGH; i++) {
+            for(int j = 0; j < BUTTONS_ACROSS; j++) {
 
-        Rectangle [] buttons = new Rectangle[TOTAL_BUTTONS];
-        int button_counter = 0;
+                buttons[b] = new Button(x_current, y_current, BUTTON_WIDTH, BUTTON_HEIGHT, b);
+                root.getChildren().add(buttons[b].getButton());
 
-        for(int i = 0; i < BUTTONS_HEIGHT; i++) {
-            for(int j = 0; j < BUTTONS_WIDTH; j++) {
+                buttons[b].setTextPosition(
+                        (BUTTON_WIDTH + GAP) * j, (BUTTON_HEIGHT + GAP) * i, ANSWER_BGND_HEIGHT + GAP);
 
-                buttons[button_counter] = new Rectangle(x_current, y_current, BUTTON_WIDTH, BUTTON_HEIGHT);
-
-                buttons[button_counter].setFill(Color.SANDYBROWN);
-                buttons[button_counter].setOpacity(0.5);
-
-                root.getChildren().add(buttons[button_counter]);
+                root.getChildren().add(buttons[b].getText());
 
                 x_current += BUTTON_WIDTH + GAP;
 
-                button_counter++;
+                b++;
 
             }
             x_current = GAP;
             y_current += BUTTON_HEIGHT + GAP;
         }
-
-
 
         stage.setScene(scene);
         stage.show();
