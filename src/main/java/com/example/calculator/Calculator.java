@@ -20,7 +20,6 @@ public class Calculator extends Application {
         final double CALCULATOR_WIDTH_OFFSET = 14;
     final double CALCULATOR_HEIGHT = 750;
         final double CALCULATOR_HEIGHT_OFFSET = 36;
-        final double ANSWER_BGND_HEIGHT = CALCULATOR_HEIGHT / 5;
 
     final double GAP = 10;
 
@@ -28,14 +27,6 @@ public class Calculator extends Application {
     final int BUTTONS_HIGH = 5;
 
     final int MAX_CHARACTERS = 15;
-
-
-    private final String [] parts = new String[2];
-    private String part = "";
-    private final Text partText = new Text("");
-    private boolean isDecimal = false;
-    private char currentOperation = 0;
-    private String answer = "";
 
     @Override
     public void start(Stage stage) {
@@ -48,6 +39,13 @@ public class Calculator extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+    private final String [] parts = new String[2];
+    private String part = "";
+    private final Text partText = new Text("");
+    private boolean isDecimal = false;
+    private char currentOperation = 0;
+    private String answer = "";
 
     void buildCalculator(Stage stage) {
 
@@ -94,7 +92,7 @@ public class Calculator extends Application {
 
         Button [] buttons = makeButtonDesigns(root, TOTAL_BUTTONS);
 
-        configureButtons(root, buttons);
+        configureButtons(buttons);
 
     }
 
@@ -109,6 +107,8 @@ public class Calculator extends Application {
     }
 
     void addButtonDesigns(Group root, Button [] buttons) {
+
+        double ANSWER_BGND_HEIGHT = CALCULATOR_HEIGHT / 5;
 
         final double BUTTON_WIDTH = ((CALCULATOR_WIDTH - GAP) / BUTTONS_ACROSS) - GAP;
         final double BUTTON_HEIGHT = ((CALCULATOR_HEIGHT - ANSWER_BGND_HEIGHT - GAP) / BUTTONS_HIGH) - GAP;
@@ -138,9 +138,7 @@ public class Calculator extends Application {
 
     }
 
-    void configureButtons(Group root, Button [] buttons) {
-
-        buildOutputText(root);
+    void configureButtons(Button [] buttons) {
 
         configureDigits(buttons);
         configureOperations(buttons);
@@ -234,7 +232,6 @@ public class Calculator extends Application {
         }
 
     }
-
 
         void configureOperation() {
 
@@ -336,21 +333,20 @@ public class Calculator extends Application {
 
             double result;
 
-            if(currentOperation == '+') {
-                result = partNumber1 + partNumber2;
-            }
-            else if(currentOperation == '-') {
-                result = partNumber1 - partNumber2;
-            }
-            else if(currentOperation == '×') {
-                result = partNumber1 * partNumber2;
-            }
-            else if(currentOperation == '÷') {
-                result = partNumber1 / partNumber2;
-            }
-            else {
-                result = Double.parseDouble(partText.getText());
-            }
+            if(currentOperation == '+')
+            { result = partNumber1 + partNumber2; }
+
+            else if(currentOperation == '-')
+            { result = partNumber1 - partNumber2; }
+
+            else if(currentOperation == '×')
+            { result = partNumber1 * partNumber2; }
+
+            else if(currentOperation == '÷')
+            { result = partNumber1 / partNumber2; }
+
+            else
+            { result = Double.parseDouble(partText.getText()); }
 
             return result;
 
@@ -360,13 +356,14 @@ public class Calculator extends Application {
 
             String resultStr = Double.toString(result);
 
-            if(resultStr.endsWith(".0")) {
-                resultStr = resultStr.substring(0, resultStr.length() - 2);
-            }
+            if(resultStr.endsWith(".0"))
+            { resultStr = resultStr.substring(0, resultStr.length() - 2); }
 
-            partText.setText(resultStr);
+            if(resultStr.length() > 15)
+            { partText.setText("OVERFLOW"); return "0"; }
 
-            return resultStr;
+            else
+            { partText.setText(resultStr); return resultStr; }
 
         }
 
@@ -471,6 +468,8 @@ public class Calculator extends Application {
         root.getChildren().add(buildBarBackgroundTriangle(answer_background_height));
         root.getChildren().add(buildButtonsBackgroundTriangle(answer_background_height));
         root.getChildren().add(buildBarRectangle(answer_background_height));
+
+        buildOutputText(root);
 
     }
 
