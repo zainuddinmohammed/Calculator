@@ -15,7 +15,6 @@ import java.util.Objects;
 
 public class Calculator extends Application {
 
-    // private double number = 0;
     private final String [] parts = new String[2];
     private String part = "";
     private final Text partText = new Text("");
@@ -24,7 +23,7 @@ public class Calculator extends Application {
     private String answer = "";
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         final double CALCULATOR_WIDTH = 500;
             final double CALCULATOR_WIDTH_OFFSET = 14;
@@ -158,145 +157,35 @@ public class Calculator extends Application {
         partText.setY(GAP * 2);
         root.getChildren().add(partText);
 
-//        int button_offset = 0;
-//
-//        for(int i = 0; i < 10; i++) {
-//
-//            if(i == 9) {
-//                button_offset += 2;
-//            }
-//            else if(i % 3 == 0 && i != 0) {
-//                button_offset += 1;
-//            }
-//
-//            int number_offset = 1;
-//                if(i == 9) {
-//                    number_offset = -9;
-//                }
-//                number = i + number_offset;
-//
-//            System.out.println(number);
-//
-//            System.out.println(buttons[i + 4 + button_offset].getIcon());
-//
-//            buttons[i + 4 + button_offset].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-//
-//                result = 10 * result + number;
-//                resultText.setText(Double.toString(result));
-//
-//            });
-//
-//        }
+        int button_offset = 0;
 
-        buttons[1   + 3].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+        for(int i = 0; i < 10; i++) {
 
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "1";
-                partText.setText(part);
-
+            if(i == 9) {
+                button_offset += 2;
+            }
+            else if(i % 3 == 0 && i != 0) {
+                button_offset += 1;
             }
 
-        });
+            int number_offset = 1;
+                if(i == 9) {
+                    number_offset = -9;
+                }
+                final int number = i + number_offset;
 
-        buttons[2   + 3].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            buttons[i + 4 + button_offset].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
-            if (part.length() < MAX_CHARACTERS) {
+                if (part.length() < MAX_CHARACTERS) {
 
-                part += "2";
-                partText.setText(part);
+                    part += Integer.toString(number);
+                    partText.setText(part);
 
-            }
+                }
 
-        });
+            });
 
-        buttons[3   + 3].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "3";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[4   + 4].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "4";
-                partText.setText(part);
-
-            }
-        });
-
-        buttons[5   + 4].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "5";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[6   + 4].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "6";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[7   + 5].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "7";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[8   + 5].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "8";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[9   + 5].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "9";
-                partText.setText(part);
-
-            }
-
-        });
-
-        buttons[17].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-            if (part.length() < MAX_CHARACTERS) {
-
-                part += "0";
-                partText.setText(part);
-
-            }
-
-        });
-
+        }
 
         buttons[0].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
