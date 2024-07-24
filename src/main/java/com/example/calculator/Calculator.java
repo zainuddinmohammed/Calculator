@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -156,7 +157,8 @@ public class Calculator extends Application {
     void buildOutputText(Group root) {
 
         partText.setX(GAP * 2);
-        partText.setY(GAP * 2);
+        partText.setY(GAP + (CALCULATOR_HEIGHT / 10));
+        partText.setFont(Font.font("Courier New", 50));
         root.getChildren().add(partText);
 
     }
@@ -187,29 +189,29 @@ public class Calculator extends Application {
 
     }
 
-    int buttonOffsetUpdater(int offset, int i) {
+        int buttonOffsetUpdater(int offset, int i) {
 
-        if(i == 9) {
-            offset += 2;
-        }
-        else if(i % 3 == 0 && i != 0) {
-            offset += 1;
-        }
+            if(i == 9) {
+                offset += 2;
+            }
+            else if(i % 3 == 0 && i != 0) {
+                offset += 1;
+            }
 
-        return offset;
+            return offset;
 
-    }
-
-    int numberOffsetIndicator(int i) {
-
-        if(i == 9) {
-            return -9;
-        }
-        else {
-            return 1;
         }
 
-    }
+        int numberOffsetIndicator(int i) {
+
+            if(i == 9) {
+                return -9;
+            }
+            else {
+                return 1;
+            }
+
+        }
 
     void configureOperations(Button [] buttons) {
 
@@ -234,73 +236,73 @@ public class Calculator extends Application {
     }
 
 
-    void configureOperation() {
+        void configureOperation() {
 
-        if (part.isEmpty())
-        { resultOperation(); }
+            if (part.isEmpty())
+            { resultOperation(); }
 
-        else if (parts[0] == null && parts[1] == null)
-        { halfOperation(); }
+            else if (parts[0] == null && parts[1] == null)
+            { halfOperation(); }
 
-        else if (parts[0] != null && parts[1] == null)
-        { completeOperation(); }
+            else if (parts[0] != null && parts[1] == null)
+            { completeOperation(); }
 
-    }
-
-    void resultOperation() {
-
-        parts[0] = answer;
-        partText.setText("");
-
-    }
-
-    void halfOperation() {
-
-        parts[0] = part;
-        part = "";
-        partText.setText(part);
-        isDecimal = false;
-
-    }
-
-    void completeOperation() {
-
-        double result = performOperation();
-        printOperationResult(result);
-        resetOperationVariables();
-
-    }
-
-    double performOperation() {
-
-        parts[1] = part;
-
-        double partNumber1 = Double.parseDouble(parts[0]);
-        double partNumber2 = Double.parseDouble(parts[1]);
-
-        return resultFromOperations(partNumber1, partNumber2);
-
-    }
-
-    void printOperationResult(double result) {
-
-        parts[0] = Double.toString(result);
-
-        if(parts[0].endsWith(".0")) {
-            parts[0] = parts[0].substring(0, parts[0].length() - 2);
         }
 
-        partText.setText(parts[0]);
+        void resultOperation() {
 
-    }
+            parts[0] = answer;
+            partText.setText("");
 
-    void resetOperationVariables() {
+        }
 
-        parts[1] = null;
-        part = "";
-        isDecimal = false;
+        void halfOperation() {
 
-    }
+            parts[0] = part;
+            part = "";
+            partText.setText(part);
+            isDecimal = false;
+
+        }
+
+        void completeOperation() {
+
+            double result = performOperation();
+            printOperationResult(result);
+            resetOperationVariables();
+
+        }
+
+        double performOperation() {
+
+            parts[1] = part;
+
+            double partNumber1 = Double.parseDouble(parts[0]);
+            double partNumber2 = Double.parseDouble(parts[1]);
+
+            return resultFromOperations(partNumber1, partNumber2);
+
+        }
+
+        void printOperationResult(double result) {
+
+            parts[0] = Double.toString(result);
+
+            if(parts[0].endsWith(".0")) {
+                parts[0] = parts[0].substring(0, parts[0].length() - 2);
+            }
+
+            partText.setText(parts[0]);
+
+        }
+
+        void resetOperationVariables() {
+
+            parts[1] = null;
+            part = "";
+            isDecimal = false;
+
+        }
 
     void configureEquals(Button [] buttons) {
 
@@ -308,72 +310,75 @@ public class Calculator extends Application {
 
     }
 
-    void completeEquals() {
+        void completeEquals() {
 
-        double result = returnResult();
-        answer = printEqualsResult(result);
-        resetEqualsVariables();
+            double result = returnResult();
+            answer = printEqualsResult(result);
+            resetEqualsVariables();
 
-    }
-
-    double returnResult() {
-
-        parts[1] = part;
-
-        double partNumber1 = 0;
-        double partNumber2 = 0;
-
-        if (parts[0] != null) { partNumber1 = Double.parseDouble(parts[0]); }
-        if (parts[1] != null && !part.isEmpty()) { partNumber2 = Double.parseDouble(parts[1]); }
-
-        return resultFromOperations(partNumber1, partNumber2);
-
-    }
-
-    double resultFromOperations(double partNumber1, double partNumber2) {
-
-        double result = 0;
-
-        if(currentOperation == '+') {
-            result = partNumber1 + partNumber2;
-        }
-        else if(currentOperation == '-') {
-            result = partNumber1 - partNumber2;
-        }
-        else if(currentOperation == '×') {
-            result = partNumber1 * partNumber2;
-        }
-        else if(currentOperation == '÷') {
-            result = partNumber1 / partNumber2;
         }
 
-        return result;
+        double returnResult() {
 
-    }
+            parts[1] = part;
 
-    String printEqualsResult(double result) {
+            double partNumber1 = 0;
+            double partNumber2 = 0;
 
-        String resultStr = Double.toString(result);
+            if (parts[0] != null) { partNumber1 = Double.parseDouble(parts[0]); }
+            if (parts[1] != null && !part.isEmpty()) { partNumber2 = Double.parseDouble(parts[1]); }
 
-        if(resultStr.endsWith(".0")) {
-            resultStr = resultStr.substring(0, resultStr.length() - 2);
+            return resultFromOperations(partNumber1, partNumber2);
+
         }
 
-        partText.setText(resultStr);
+        double resultFromOperations(double partNumber1, double partNumber2) {
 
-        return resultStr;
+            double result;
 
-    }
+            if(currentOperation == '+') {
+                result = partNumber1 + partNumber2;
+            }
+            else if(currentOperation == '-') {
+                result = partNumber1 - partNumber2;
+            }
+            else if(currentOperation == '×') {
+                result = partNumber1 * partNumber2;
+            }
+            else if(currentOperation == '÷') {
+                result = partNumber1 / partNumber2;
+            }
+            else {
+                result = Double.parseDouble(partText.getText());
+            }
 
-    void resetEqualsVariables() {
+            return result;
 
-        currentOperation = '0';
-        part = "";
-        parts[0] = null;
-        parts[1] = null;
-        isDecimal = false;
+        }
 
-    }
+        String printEqualsResult(double result) {
+
+            String resultStr = Double.toString(result);
+
+            if(resultStr.endsWith(".0")) {
+                resultStr = resultStr.substring(0, resultStr.length() - 2);
+            }
+
+            partText.setText(resultStr);
+
+            return resultStr;
+
+        }
+
+        void resetEqualsVariables() {
+
+            currentOperation = '0';
+            part = "";
+            parts[0] = null;
+            parts[1] = null;
+            isDecimal = false;
+
+        }
 
     void configureClear(Button [] buttons) {
 
@@ -403,23 +408,23 @@ public class Calculator extends Application {
 
     }
 
-    String negate(String numStr) {
+        String negate(String numStr) {
 
-        if (numStr.charAt(0) == '-') {
+            if (numStr.charAt(0) == '-') {
 
-            numStr = numStr.substring(1);
-            partText.setText(numStr);
+                numStr = numStr.substring(1);
+                partText.setText(numStr);
 
-        } else {
+            } else {
 
-            numStr = "-" + numStr;
-            partText.setText(numStr);
+                numStr = "-" + numStr;
+                partText.setText(numStr);
+
+            }
+
+            return numStr;
 
         }
-
-        return numStr;
-
-    }
 
     void configureDecimal(Button [] buttons) {
 
