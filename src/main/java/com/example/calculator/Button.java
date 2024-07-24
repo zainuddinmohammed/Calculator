@@ -10,18 +10,14 @@ import javafx.scene.text.TextAlignment;
 
 public class Button {
 
-    private double X;
-    private double Y;
+    private final double WIDTH;
+    private final double HEIGHT;
 
-    private double WIDTH;
-    private double HEIGHT;
-
-    private Rectangle button;
-        private Color BUTTON_COLOR = Color.SANDYBROWN;
-        public double OPACITY = 0.5;
+    private final Rectangle button;
+    public double OPACITY = 0.5;
 
     private Text icon;
-        private String [] icons = {
+        private final String [] icons = {
 
                 "C", "±", ".", "=",
 
@@ -34,23 +30,21 @@ public class Button {
                 "<", "0", "@", "÷",
 
         };
-        private Color ICON_COLOR = Color.CORAL;
-        private double ICON_SIZE;
+        private final Color ICON_COLOR = Color.CORAL;
+        private final double ICON_SIZE;
 
-    private int ORDER;
+    private final int ORDER;
 
     public Button(double x, double y, double width, double height, int order) {
-
-        this.X = x;
-        this.Y = y;
 
         this.WIDTH = width;
         this.HEIGHT = height;
 
         this.ICON_SIZE = this.WIDTH - (this.WIDTH / 7.5);
 
-        this.button = new Rectangle(this.X, this.Y, this.WIDTH, this.HEIGHT);
-        this.button.setFill(this.BUTTON_COLOR);
+        this.button = new Rectangle(x, y, this.WIDTH, this.HEIGHT);
+        Color BUTTON_COLOR = Color.SANDYBROWN;
+        this.button.setFill(BUTTON_COLOR);
         this.button.setOpacity(this.OPACITY);
 
         this.ORDER = order;
