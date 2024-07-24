@@ -1,5 +1,6 @@
 package com.example.calculator;
 
+import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -36,9 +37,9 @@ public class Button {
         private Color ICON_COLOR = Color.CORAL;
         private double ICON_SIZE;
 
-    private int VALUE;
+    private int ORDER;
 
-    public Button(double x, double y, double width, double height, int value) {
+    public Button(double x, double y, double width, double height, int order) {
 
         this.X = x;
         this.Y = y;
@@ -46,13 +47,13 @@ public class Button {
         this.WIDTH = width;
         this.HEIGHT = height;
 
-        ICON_SIZE = this.WIDTH - (this.WIDTH / 7.5);
+        this.ICON_SIZE = this.WIDTH - (this.WIDTH / 7.5);
 
-        this.button = new Rectangle(X, Y, WIDTH, HEIGHT);
-        this.button.setFill(BUTTON_COLOR);
-        this.button.setOpacity(OPACITY);
+        this.button = new Rectangle(this.X, this.Y, this.WIDTH, this.HEIGHT);
+        this.button.setFill(this.BUTTON_COLOR);
+        this.button.setOpacity(this.OPACITY);
 
-        this.VALUE = value;
+        this.ORDER = order;
 
         this.setIcon();
 
@@ -60,22 +61,18 @@ public class Button {
 
     public Rectangle getButton() { return button; }
 
-    public int getVALUE() {
-        return this.VALUE;
-    }
-
     private void setIcon() {
 
         this.icon = new Text();
 
         this.icon.setText(getIcon());
 
-        this.icon.setTextAlignment(TextAlignment.CENTER);
-
         this.icon.setTextOrigin(VPos.CENTER);
 
-        this.icon.setFont(Font.font("Verdana", this.ICON_SIZE));
+        this.icon.setFont(Font.font("Courier New", this.ICON_SIZE));
         this.icon.setFill(this.ICON_COLOR);
+
+        this.icon.setTextAlignment(TextAlignment.CENTER);
 
     }
 
@@ -88,12 +85,8 @@ public class Button {
         return this.icon;
     }
 
-    private String getIcon() {
-        return icons[this.VALUE];
+    public String getIcon() {
+        return icons[this.ORDER];
     }
-
-
-
-
 
 }
