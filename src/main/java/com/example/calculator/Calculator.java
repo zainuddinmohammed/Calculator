@@ -363,7 +363,7 @@ public class Calculator extends Application {
 
                 }
 
-                    // Operation was pressed without any previous operands (operand is first button clicked on run or clicked right after '=')
+                    // Operation was pressed without any previous operands, operation is the first button clicked on run or clicked right after '='
                     void resultOperation() {
 
                         parts[0] = answer; // set the answer as the first operand
