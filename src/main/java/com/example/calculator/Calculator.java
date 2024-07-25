@@ -442,9 +442,13 @@ public class Calculator extends Application {
                 // Complete the equals operation
                 void completeEquals() {
 
-                    double result = returnResult(); // get the result
-                    answer = printEqualsResult(result); // print the result
-                    resetEqualsVariables(); // reset necessary variables
+                    if(!part.isEmpty()) {
+
+                        double result = returnResult(); // get the result
+                        answer = printEqualsResult(result); // print the result
+                        resetEqualsVariables(); // reset necessary variables
+
+                    }
 
                 }
 
@@ -469,7 +473,7 @@ public class Calculator extends Application {
                         // Determine result from operation
                         double resultFromOperations(double partNumber1, double partNumber2) {
 
-                            double result = 0; // set up result variable
+                            double result; // set up result variable
 
                             // Complete operation depending on the operation indicated by currentOperation
 
@@ -482,10 +486,10 @@ public class Calculator extends Application {
                             else if(currentOperation == '×')
                             { result = partNumber1 * partNumber2; }
 
-                            else if(currentOperation == '÷' && partNumber2 != 0)
+                            else if(currentOperation == '÷')
                             { result = partNumber1 / partNumber2; }
 
-                            else if(currentOperation == 0 && partNumber2 != 0)    // in the case that '=' is clicked without proper operands
+                            else    // in the case that '=' is clicked without proper operands
                             { result = Double.parseDouble(partText.getText()); } // do not change text
 
                             return result; // return result
