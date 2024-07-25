@@ -1,3 +1,6 @@
+
+
+
 package com.example.calculator;
 
 import javafx.application.Application;
@@ -279,9 +282,12 @@ public class Calculator extends Application {
                         // if too many numbers are not typed in yet
                         if (part.length() < MAX_CHARACTERS) {
 
-                            // add this digit to the display box
-                            part += Integer.toString(number);
-                            partText.setText(part);
+                            // Only type 0 if the display box is not empty
+                            if(!(number == 0 && part.isEmpty())) {
+                                // add this digit to the display box
+                                part += Integer.toString(number);
+                                partText.setText(part);
+                            }
 
                         }
 
@@ -463,7 +469,7 @@ public class Calculator extends Application {
                         // Determine result from operation
                         double resultFromOperations(double partNumber1, double partNumber2) {
 
-                            double result; // set up result variable
+                            double result = 0; // set up result variable
 
                             // Complete operation depending on the operation indicated by currentOperation
 
@@ -476,10 +482,10 @@ public class Calculator extends Application {
                             else if(currentOperation == '×')
                             { result = partNumber1 * partNumber2; }
 
-                            else if(currentOperation == '÷')
+                            else if(currentOperation == '÷' && partNumber2 != 0)
                             { result = partNumber1 / partNumber2; }
 
-                            else    // in the case that '=' is clicked without proper operands
+                            else if(currentOperation == 0 && partNumber2 != 0)    // in the case that '=' is clicked without proper operands
                             { result = Double.parseDouble(partText.getText()); } // do not change text
 
                             return result; // return result
