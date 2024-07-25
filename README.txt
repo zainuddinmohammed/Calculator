@@ -1,4 +1,4 @@
-    A basic calculator app that supports:
+    A basic javafx calculator app that supports:
         - All digits (0-9)
         - Addition, subtraction, multiplication, and division
         - Backspacing
