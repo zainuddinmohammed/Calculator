@@ -230,7 +230,7 @@ public class Calculator extends Application {
 
                     // add button text and design to calculator
                     root.getChildren().add(buttons[btnNum].getText());
-                    root.getChildren().add(buttons[btnNum].getButton());
+                    root.getChildren().add(buttons[btnNum].getButtonRectangle());
 
                     // adjust positioning for the next button
                     x_current += BUTTON_WIDTH + GAP;
@@ -274,7 +274,7 @@ public class Calculator extends Application {
                     final int number = i + number_offset;                   // set the number (to be displayed)
 
                     // When digits 1-9 and lastly 0 are clicked
-                    buttons[i + BUTTONS_ACROSS + buttonOffset].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    buttons[i + BUTTONS_ACROSS + buttonOffset].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                         // if too many numbers are not typed in yet
                         if (part.length() < MAX_CHARACTERS) {
@@ -333,7 +333,7 @@ public class Calculator extends Application {
                     int number = i * 4 + 7; // determine the position of the operation in the buttons array
 
                     // when any of the four operator's buttons are clicked
-                    buttons[number].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    buttons[number].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                         currentOperation = operations[operation]; // set the current operation to its respective index on the operations array
                         configureOperation(); // configure the operation itself
@@ -429,7 +429,7 @@ public class Calculator extends Application {
             // CONFIGURE EQUALS OPERATION: Sets up the equals button on the calculator
             void configureEquals(Button [] buttons) {
 
-                buttons[3].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> completeEquals());
+                buttons[3].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> completeEquals());
 
             }
 
@@ -519,7 +519,7 @@ public class Calculator extends Application {
             // Configure the clear button
             void configureClear(Button [] buttons) {
 
-                buttons[0].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[0].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                     // reset all necessary variables
 
@@ -536,7 +536,7 @@ public class Calculator extends Application {
             // Configure the negation button
             void configureNegation(Button [] buttons) {
 
-                buttons[1].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[1].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                     // if a typed number is being negated
                     if (!part.isEmpty())
@@ -576,7 +576,7 @@ public class Calculator extends Application {
             // Configure decimal button
             void configureDecimal(Button [] buttons) {
 
-                buttons[2].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[2].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                     // Only add a decimal point if one has not already been added
 
@@ -595,7 +595,7 @@ public class Calculator extends Application {
             // Configure delete button
             void configureDelete(Button [] buttons) {
 
-                buttons[16].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[16].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                     // Proceed to deletion only if the display is not empty
                     if (!Objects.equals(part, "")) {
@@ -610,7 +610,7 @@ public class Calculator extends Application {
             // Configure answer button
             void configureAnswer(Button [] buttons) {
 
-                buttons[18].getButton().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[18].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 
                     part = answer; // set the display number to the previous result
                     partText.setText(part); // set display
