@@ -1,6 +1,4 @@
 
-
-
 package com.example.calculator;
 
 import javafx.application.Application;
@@ -491,6 +489,8 @@ public class Calculator extends Application {
 
                             else    // in the case that '=' is clicked without proper operands
                             { result = Double.parseDouble(partText.getText()); } // do not change text
+
+
 
                             return result; // return result
 

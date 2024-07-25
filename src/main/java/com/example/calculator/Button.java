@@ -73,8 +73,8 @@ public class Button {
 
     // Set text position
     public void setTextPosition(double x, double y, double answer_bgnd_height) {
-        this.iconText.setX((this.WIDTH / 4) + x);                           // set x position
-        this.iconText.setY(answer_bgnd_height + (this.HEIGHT / 2) + y);     // set y position
+        this.iconText.setX((this.WIDTH / 4) + x + 6);                           // set x position
+        this.iconText.setY(answer_bgnd_height + (this.HEIGHT / 2) + y + 6);     // set y position
     }
 
     public Text getText() {
