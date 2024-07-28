@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -47,7 +48,7 @@ public class Calculator extends Application {
 
     }
 
-    // GLOBAL VARIABLES (for button lambda expressions)
+    // GLOBAL VARIABLES (for mouse click/keyboard press lambda expressions)
     private String part = "";   // saves numbers that are typed in
     private final String [] parts = new String[2];  // array to hold both sides of an expression
     private final Text partText = new Text("");  // current display on answer box
@@ -84,9 +85,11 @@ public class Calculator extends Application {
 
         Group root = new Group();   // creating root group
 
-        stage.setScene(new Scene(root, Color.LEMONCHIFFON));    // setting scene for background color
+        Scene scene = new Scene(root, Color.LEMONCHIFFON);
+
+        stage.setScene(scene);    // setting scene for background color
         designCalculator(root); // general calculator design
-        buildButtons(root);     // button design and functionality
+        buildButtons(root, scene);     // button design and functionality
 
     }
 
@@ -196,13 +199,13 @@ public class Calculator extends Application {
         }
 
     // BUILD BUTTONS: Designs and programs calculator buttons for app functionality
-    void buildButtons(Group root) {
+    void buildButtons(Group root, Scene scene) {
 
         int TOTAL_BUTTONS = BUTTONS_ACROSS * BUTTONS_HIGH;  // total number of buttons
 
         Button [] buttons = createButtons(root, TOTAL_BUTTONS); // array that holds all buttons
 
-        configureButtons(buttons);  // create button functionality
+        configureButtons(buttons, scene);  // create button functionality
 
     }
 
@@ -248,21 +251,21 @@ public class Calculator extends Application {
         }
 
         // CONFIGURE BUTTONS: Function to add functionality to each button on calculator
-        void configureButtons(Button [] buttons) {
+        void configureButtons(Button [] buttons, Scene scene) {
 
-            configureDigits(buttons);       // digits       symbol: (0-9)
-            configureOperations(buttons);   // operations   symbol: (+, -, ×, ÷)
-            configureEquals(buttons);       // equals       symbol: (=)
-            configureClear(buttons);        // clear        symbol: (C)
-            configureNegation(buttons);     // negation     symbol: (±)
-            configureDecimal(buttons);      // decimal      symbol: (.)
-            configureDelete(buttons);       // delete       symbol: (<)
-            configureAnswer(buttons);       // answer       symbol: (@)
+            configureDigits(buttons, scene);       // digits       symbol: (0-9)
+            configureOperations(buttons, scene);   // operations   symbol: (+, -, ×, ÷)
+            configureEquals(buttons, scene);       // equals       symbol: (=)
+            configureClear(buttons, scene);        // clear        symbol: (C)
+            configureNegation(buttons, scene);     // negation     symbol: (±)
+            configureDecimal(buttons, scene);      // decimal      symbol: (.)
+            configureDelete(buttons, scene);       // delete       symbol: (<)
+            configureAnswer(buttons, scene);       // answer       symbol: (@)
 
         }
 
             // CONFIGURE DIGITS: Set up functionality of digit buttons
-            void configureDigits(Button [] buttons) {
+            void configureDigits(Button [] buttons, Scene scene) {
 
                 // Order of digits in buttons array are not consistent, an offset variable can help
                 int buttonOffset = 0;
@@ -273,27 +276,47 @@ public class Calculator extends Application {
                     buttonOffset = buttonOffsetUpdater(buttonOffset, i);    // set the button offset (to maneuver array correctly)
                     int number_offset = numberOffsetIndicator(i);           // set the number offset (for displaying correct number)
                     final int number = i + number_offset;                   // set the number (to be displayed)
+                    final String keypress = "DIGIT" + number;               // set the keyboard codes for digits
 
-                    // When digits 1-9 and lastly 0 are clicked
-                    buttons[i + BUTTONS_ACROSS + buttonOffset].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    int currentButtonIndex = i + BUTTONS_ACROSS + buttonOffset;
 
-                        // if too many numbers are not typed in yet
-                        if (part.length() < MAX_CHARACTERS) {
+                    // When digits 1-9 and lastly 0 are clicked...
+                    buttons[currentButtonIndex].getButtonRectangle()
+                            .addEventHandler(MouseEvent.MOUSE_CLICKED,
+                                    e -> digitEvent(number));
 
-                            // Only type 0 if the display box is not empty
-                            if(!(number == 0 && part.isEmpty())) {
-                                // add this digit to the display box
-                                part += Integer.toString(number);
-                                partText.setText(part);
-                            }
-
-                        }
-
-                    });
+                    // or pressed on the keyboard
+                    scene
+                            .addEventHandler(KeyEvent.KEY_PRESSED,
+                                    e -> digitKeyEvent(number, keypress, e));
 
                 }
 
             }
+
+                // Adds digits to calculator display bar
+                void digitEvent(int number) {
+
+                    // if too many numbers are not typed in yet
+                    if (part.length() < MAX_CHARACTERS) {
+
+                        // Only type 0 if the display box is not empty
+                        if(!(number == 0 && part.isEmpty())) {
+                            // add this digit to the display box
+                            part += Integer.toString(number);
+                            partText.setText(part);
+                        }
+
+                    }
+
+                }
+
+                // Helps add digits to calculator display bar for key presses
+                void digitKeyEvent(int number, String keypress, KeyEvent e) {
+
+                    if (!e.isShiftDown() && e.getCode().toString().equals(keypress)) { digitEvent(number); }
+
+                }
 
                 // helps the for loop in configureDigits() maneuver buttons array properly
                 int buttonOffsetUpdater(int offset, int i) {
@@ -326,23 +349,32 @@ public class Calculator extends Application {
                 }
 
             // CONFIGURE OPERATIONS: Set up functionality of operators (+, -, ×, ÷)
-            void configureOperations(Button [] buttons) {
+            void configureOperations(Button [] buttons, Scene scene) {
 
                 char [] operations = new char[]{'+', '-', '×', '÷'}; // put operators in an array
+                String [] operationKeys = new String[]{"A", "S", "M", "D"};
+                String [] numpadKeys = new String[]{"ADD", "SUBTRACT", "MULTIPLY", "DIVIDE"};
 
                 // for each operator
                 for(int i = 0; i < 4; i++) {
 
-                    final int operation = i; // save the iteration to a final variable for the next lambda expression
                     int number = i * 4 + 7; // determine the position of the operation in the buttons array
 
-                    // when any of the four operator's buttons are clicked
-                    buttons[number].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    final char operation = operations[i]; // save the iteration to a final variable for the next lambda expression
+                    final String operationKey = operationKeys[i];
+                    final String numpadKey = numpadKeys[i];
 
-                        currentOperation = operations[operation]; // set the current operation to its respective index on the operations array
-                        configureOperation(); // configure the operation itself
+                    // when any of the four operator's buttons are clicked, configure the operation itself
+                    buttons[number].getButtonRectangle()
+                            .addEventHandler(MouseEvent.MOUSE_CLICKED,
+                                    e -> configureOperation(operation));
 
-                    });
+                    scene
+                            .addEventHandler(KeyEvent.KEY_PRESSED,
+                                    e -> configureOperationKey(operation, operationKey, e));
+                    scene
+                            .addEventHandler(KeyEvent.KEY_PRESSED,
+                                    e -> configureOperationKey(operation, numpadKey, e));
 
                     currentOperation = 0; // reset the current operation
 
@@ -351,7 +383,9 @@ public class Calculator extends Application {
             }
 
                 // CONFIGURE OPERATIONS: Carries out any of the four operations
-                void configureOperation() {
+                void configureOperation(char operation) {
+
+                    currentOperation = operation;    // set the current operation to its respective index on the operations array
 
                     // if the operation was pressed without any operands
                     if (part.isEmpty())
@@ -430,10 +464,17 @@ public class Calculator extends Application {
 
                         }
 
+                void configureOperationKey(char operation, String operationKey, KeyEvent e) {
+
+                    if(e.getCode().toString().equals(operationKey)) { configureOperation(operation); }
+
+                }
+
             // CONFIGURE EQUALS OPERATION: Sets up the equals button on the calculator
-            void configureEquals(Button [] buttons) {
+            void configureEquals(Button [] buttons, Scene scene) {
 
                 buttons[3].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> completeEquals());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::completeEqualsKey);
 
             }
 
@@ -449,6 +490,9 @@ public class Calculator extends Application {
                     }
 
                 }
+
+                void completeEqualsKey(KeyEvent e)
+                    { if(e.getCode().toString().equals("ENTER") || e.getCode().toString().equals("EQUALS")) { completeEquals(); } }
 
                     // Return result from operation
                     double returnResult() {
@@ -527,9 +571,14 @@ public class Calculator extends Application {
                     }
 
             // Configure the clear button
-            void configureClear(Button [] buttons) {
+            void configureClear(Button [] buttons, Scene scene) {
 
-                buttons[0].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[0].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> clear());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::clearKey);
+
+            }
+
+                void clear() {
 
                     // reset all necessary variables
 
@@ -539,14 +588,21 @@ public class Calculator extends Application {
                     isDecimal = false;
                     partText.setText(part);
 
-                });
+                }
+
+                void clearKey(KeyEvent e) {
+                    if(e.getCode().toString().equals("C") || e.getCode().toString().equals("ESCAPE")) { clear(); }
+                }
+
+            // Configure the negation button
+            void configureNegation(Button [] buttons, Scene scene) {
+
+                buttons[1].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> chooseNegate());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::negateKey);
 
             }
 
-            // Configure the negation button
-            void configureNegation(Button [] buttons) {
-
-                buttons[1].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                void chooseNegate() {
 
                     // if a typed number is being negated
                     if (!part.isEmpty())
@@ -556,37 +612,42 @@ public class Calculator extends Application {
                     else if (!answer.isEmpty())
                     { answer = negate(answer); } // negate the result
 
-                });
+                }
 
-            }
+                void negateKey(KeyEvent e) { if(e.getCode().toString().equals("MINUS")) { chooseNegate(); } }
 
-                // Negation function
-                String negate(String numStr) {
+                    // Negation function
+                    String negate(String numStr) {
 
-                    // The number being examined is stored as a string
+                        // The number being examined is stored as a string
 
-                    // If the number has a "-" in the beginning
-                    if (numStr.charAt(0) == '-') {
+                        // If the number has a "-" in the beginning
+                        if (numStr.charAt(0) == '-') {
 
-                        numStr = numStr.substring(1); // remove the "-"
-                        partText.setText(numStr); // set display
+                            numStr = numStr.substring(1); // remove the "-"
+                            partText.setText(numStr); // set display
 
-                    // if the number does not have a "-" in the beginning
-                    } else {
+                        // if the number does not have a "-" in the beginning
+                        } else {
 
-                        numStr = "-" + numStr; // add a "-" to the beginning
-                        partText.setText(numStr); // set display
+                            numStr = "-" + numStr; // add a "-" to the beginning
+                            partText.setText(numStr); // set display
+
+                        }
+
+                        return numStr; // return the number
 
                     }
 
-                    return numStr; // return the number
-
-                }
-
             // Configure decimal button
-            void configureDecimal(Button [] buttons) {
+            void configureDecimal(Button [] buttons, Scene scene) {
 
-                buttons[2].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                buttons[2].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> decimal());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::decimalKey);
+
+            }
+
+                void decimal() {
 
                     // Only add a decimal point if one has not already been added
 
@@ -598,14 +659,19 @@ public class Calculator extends Application {
                     isDecimal = true; // prevents more decimal points from being added
                     partText.setText(part); // set display
 
-                });
+                }
+
+                void decimalKey(KeyEvent e) { if(e.getCode().toString().equals("PERIOD")) { decimal(); } }
+
+            // Configure delete button
+            void configureDelete(Button [] buttons, Scene scene) {
+
+                buttons[16].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> delete());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::deleteKey);
 
             }
 
-            // Configure delete button
-            void configureDelete(Button [] buttons) {
-
-                buttons[16].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                void delete() {
 
                     // Proceed to deletion only if the display is not empty
                     if (!Objects.equals(part, "")) {
@@ -613,20 +679,23 @@ public class Calculator extends Application {
                         partText.setText(part); // set display
                     }
 
-                });
+                }
 
-            }
+                void deleteKey(KeyEvent e) { if(e.getCode().toString().equals("BACK_SPACE")) { delete(); } }
 
             // Configure answer button
-            void configureAnswer(Button [] buttons) {
+            void configureAnswer(Button [] buttons, Scene scene) {
 
-                buttons[18].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-
-                    part = answer; // set the display number to the previous result
-                    partText.setText(part); // set display
-
-                });
+                buttons[18].getButtonRectangle().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answer());
+                scene.addEventHandler(KeyEvent.KEY_PRESSED, this::answerKey);
 
             }
+
+            void answer() {
+                part = answer; // set the display number to the previous result
+                partText.setText(part); // set display
+            }
+
+            void answerKey(KeyEvent e) { if(e.getCode().toString().equals("UP")) { answer(); }}
 
 }
