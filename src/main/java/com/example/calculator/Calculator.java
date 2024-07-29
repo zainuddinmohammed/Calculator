@@ -385,19 +385,19 @@ public class Calculator extends Application {
                 // CONFIGURE OPERATIONS: Carries out any of the four operations
                 void configureOperation(char operation) {
 
+                    // if the operation was pressed for an incoming operand when one operand was already set
+                    if (parts[0] != null && parts[1] == null)
+                    { completeOperation(operation); return; }    // complete the operation for the two operands and set up for the new operand
+
                     currentOperation = operation;    // set the current operation to its respective index on the operations array
 
                     // if the operation was pressed without any operands
                     if (part.isEmpty())
-                    { resultOperation(); }      // use the answer as the first operand
+                    { resultOperation(); return; }      // use the answer as the first operand
 
                     // if the operation was pressed with an incoming operand
-                    else if (parts[0] == null && parts[1] == null)
+                    if (parts[0] == null && parts[1] == null)
                     { halfOperation(); }        // set the first operand
-
-                    // if the operation was pressed for an incoming operand when one operand was already set
-                    else if (parts[0] != null && parts[1] == null)
-                    { completeOperation(); }    // complete the operation for the two operands and set up for the new operand
 
                 }
 
@@ -420,11 +420,13 @@ public class Calculator extends Application {
                     }
 
                     // Operation was pressed with an existing operand in the memory (in the case where an operation is applied multiple times in a row)
-                    void completeOperation() {
+                    void completeOperation(char operation) {
 
                         double result = performOperation(); // perform the operation
                         printOperationResult(result); // print the result
                         resetOperationVariables(); // reset specific variables
+
+                        currentOperation = operation;
 
                     }
 
@@ -451,7 +453,17 @@ public class Calculator extends Application {
                                 parts[0] = parts[0].substring(0, parts[0].length() - 2); // cutting off the ".0"
                             }
 
-                            partText.setText(parts[0]); // display the current result
+                            // If the result is greater than 15 characters, display "OVERFLOW"
+                            if(result > 100000000000000.0 || parts[0].contains("E"))   // avoiding scientific notation for formatting
+                            { partText.setText("OVERFLOW"); }
+
+                            // If the result is greater than 15 characters but is a smaller decimal, print the first 15 digits
+                            if(parts[0].length() > 15)
+                            { partText.setText(parts[0]); }
+
+                            // Otherwise, display result
+                            else
+                            { partText.setText(parts[0]); }
 
                         }
 
@@ -550,8 +562,12 @@ public class Calculator extends Application {
                         { resultStr = resultStr.substring(0, resultStr.length() - 2); }
 
                         // If the result is greater than 15 characters, display "OVERFLOW"
-                        if(resultStr.length() > 15)
+                        if(result > 100000000000000.0 || resultStr.contains("E"))   // avoiding scientific notation for formatting
                         { partText.setText("OVERFLOW"); return "0"; }
+
+                        // If the result is greater than 15 characters but is a smaller decimal, print the first 15 digits
+                        if(resultStr.length() > 15)
+                        { partText.setText(resultStr.substring(0, 15)); return resultStr; }
 
                         // Otherwise, display result
                         else
